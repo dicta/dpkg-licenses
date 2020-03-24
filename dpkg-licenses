@@ -51,7 +51,7 @@ COLUMNS=2000 dpkg -l | grep '^.[iufhwt]' | while read pState package pVer pArch 
   done
   [ -n "$license" ] || license='UNKNOWN'
 
-  sourcerepo=$(apt-cache madison "$package" | head -1 |  cut -d\| -f3 | cut -d' ' -f2)
+  sourcerepo=$(apt-cache madison "$package" | grep "${pVer}" | head -1 |  cut -d\| -f3 | cut -d' ' -f2)
 
   printf "$format" "${package:0:30}" "${pVer:0:40}" "$sourcerepo" "$license"
 done
