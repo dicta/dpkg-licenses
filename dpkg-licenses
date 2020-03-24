@@ -34,9 +34,9 @@ esac
 SCRIPTLIB=$(dirname $(readlink -f "$0"))/lib/
 test -d "$SCRIPTLIB"
 
-format='%-2s  %-30s %-30s %-6s %-60s %s\n'
-printf "$format" "St" "Name" "Version" "Arch" "Repo" "Licenses"
-printf "$format" "--" "----" "-------" "----" "----" "--------"
+format='| %-40s | %-40s | %-40s | %s |\n'
+printf "$format" "Name" "Version" "URL" "Licenses"
+printf "$format" "----" "-------" "---" "--------"
 
 COLUMNS=2000 dpkg -l | grep '^.[iufhwt]' | while read pState package pVer pArch pDesc; do
   license=
@@ -49,10 +49,10 @@ COLUMNS=2000 dpkg -l | grep '^.[iufhwt]' | while read pState package pVer pArch 
     license=$(echo "$license" | tr '\n' ' ' | sed -r -e 's/ +/ /g' -e 's/^ +//' -e 's/ +$//')
     [ -z "$license" ] || break
   done
-  [ -n "$license" ] || license='unknown'
+  [ -n "$license" ] || license='UNKNOWN'
 
   sourcerepo=$(apt-cache madison "$package" | head -1 |  cut -d\| -f3 | cut -d' ' -f2)
 
-  printf "$format" "$pState" "${package:0:30}" "${pVer:0:30}" "${pArch:0:6}" "$sourcerepo" "$license"
+  printf "$format" "${package:0:30}" "${pVer:0:40}" "$sourcerepo" "$license"
 done
 
